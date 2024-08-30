@@ -1,32 +1,59 @@
 package org.example;
 
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.api.DisplayName;
 
-import static org.junit.jupiter.api.Assertions.*;
+import java.time.LocalDateTime;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class WelcomeTest {
+
     @Test
-    void testLundiMatin() {
-        Welcome welcome = new Welcome(9, "lundi");
-        String expected = "Bonjour Bon week-end ";
-        assertEquals(expected, welcome.getMessage());
+    @DisplayName("Matin")
+    void weekMorning() {
+        Idate fakeDate = new FakeDate(LocalDateTime.of(2023, 8, 29, 10, 0)); // Mardi à 10h
+        Welcome welcome = new Welcome(fakeDate);
+        assertEquals("Bonjour", welcome.getMessage());
     }
 
-
-    @ParameterizedTest
-    @CsvSource({
-            "9, lundi, Bonjour Bon week-end"+" ",         // Cas 1 : lundi à 9h
-            "14, mardi, Bon après-midi"+" ",              // Cas 2 : mardi à 14h
-            "19, mercredi, Bonsoir"+" ",                  // Cas 3 : mercredi à 19h
-            "8, vendredi, Bon week-end"+" ",              // Cas 4 : vendredi à 8h
-            "18, vendredi, Bon après-midi Bon week-end"+" ", // Cas 5 : vendredi à 18h
-    })
-    void testGetMessage(int time, String day, String expectedMessage) {
-        Welcome welcome = new Welcome(time, day);
-        String actualMessage = welcome.getMessage();
-        assertEquals(expectedMessage, actualMessage);
+    @Test
+    @DisplayName("Après-midi")
+    void weekAfternoon() {
+        Idate fakeDate = new FakeDate(LocalDateTime.of(2023, 8, 29, 15, 0)); // Mardi à 15h
+        Welcome welcome = new Welcome(fakeDate);
+        assertEquals("Bon après-midi", welcome.getMessage());
     }
 
+    @Test
+    @DisplayName("Soir")
+    void weekEvening() {
+        Idate fakeDate = new FakeDate(LocalDateTime.of(2023, 8, 29, 20, 0)); // Mardi à 20h
+        Welcome welcome = new Welcome(fakeDate);
+        assertEquals("Bonsoir", welcome.getMessage());
+    }
+
+    @Test
+    @DisplayName("Week-end")
+    void weekend() {
+        Idate fakeDate = new FakeDate(LocalDateTime.of(2023, 8, 26, 10, 0)); // Samedi à 10h
+        Welcome welcome = new Welcome(fakeDate);
+        assertEquals("Bon week-end", welcome.getMessage());
+    }
+
+    @Test
+    @DisplayName("Fin de journée vendredi")
+    void fridayEvening() {
+        Idate fakeDate = new FakeDate(LocalDateTime.of(2023, 8, 25, 19, 0)); // Vendredi à 19h
+        Welcome welcome = new Welcome(fakeDate);
+        assertEquals("Bon week-end", welcome.getMessage());
+    }
+
+    @Test
+    @DisplayName("Début de journée lundi")
+    void mondayMorning() {
+        Idate fakeDate = new FakeDate(LocalDateTime.of(2023, 8, 28, 8, 0)); // Lundi à 8h
+        Welcome welcome = new Welcome(fakeDate);
+        assertEquals("Bon week-end", welcome.getMessage());
+    }
 }

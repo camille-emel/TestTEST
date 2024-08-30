@@ -1,30 +1,35 @@
 package org.example;
 
-public class Welcome {
-    //l'heure
-    public int time;
-    //Quel jour
-    public String day;
+import java.time.DayOfWeek;
+import java.time.LocalDateTime;
 
-    public Welcome(int time, String day) {
-        this.time = time;
-        this.day = day;
+public class Welcome {
+    private final LocalDateTime date;
+
+    public Welcome(Idate dateProvider) {
+        this.date = dateProvider.getDate();
     }
 
     public String getMessage() {
+        DayOfWeek day = this.date.getDayOfWeek();
+        int hour = this.date.getHour();
         String message = "";
-        if ((time >= 9 && time <= 13) && (day.equals("lundi") || day.equals("mardi") || day.equals("mercredi") || day.equals("jeudi") || day.equals("vendredi"))) {
-            message += "Bonjour ";
+
+        // Vérifie les cas spécifiques du week-end
+        if ((day == DayOfWeek.FRIDAY && hour >= 18) || (day == DayOfWeek.MONDAY && hour < 9)) {
+            message = "Bon week-end";
+        } else if (day != DayOfWeek.SATURDAY && day != DayOfWeek.SUNDAY) {
+            if (hour >= 9 && hour < 13) {
+                message = "Bonjour";
+            } else if (hour >= 13 && hour < 18) {
+                message = "Bon après-midi";
+            } else if (hour >= 18 || hour < 9) {
+                message = "Bonsoir";
+            }
+        } else {
+            message = "Bon week-end";
         }
-        if ((time >= 13 && time <= 18) && (day.equals("lundi") || day.equals("mardi") || day.equals("mercredi") || day.equals("jeudi") || day.equals("vendredi"))) {
-            message += "Bon après-midi ";
-        }
-        if (time >= 18 && (day.equals("lundi") || day.equals("mardi") || day.equals("mercredi") || day.equals("jeudi"))) {
-            message += "Bonsoir ";
-        }
-        if ((time >= 18 || time <= 9) && ((day.equals("lundi") || day.equals("vendredi")))) {
-            message += "Bon week-end ";
-        }
+
         return message;
     }
 }
